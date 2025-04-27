@@ -18,10 +18,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd script-runner
         npm install
 
     - name: Run the script
       run: |
-        cd script-runner
         node export_otif_data.js
