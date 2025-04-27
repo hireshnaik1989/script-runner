@@ -135,6 +135,7 @@ const googleSheetWebhookURL = 'https://script.google.com/macros/s/AKfycbwV1BvLwA
   }
 })();
 
+// Helper functions for tab data
 async function getTabData(page, tabName) {
   const tabSelector = `#outbound-dashboard\\.slots-details-sidebar\\.process-tabs-tab-${tabName}`;
   await page.click(tabSelector);
