@@ -1,0 +1,15 @@
+{
+  "name": "export-otif-data",
+  "version": "1.0.0",
+  "description": "Script to export OTIF data from dashboard",
+  "main": "export_otif_data.js",
+  "scripts": {
+    "start": "node export_otif_data.js"
+  },
+  "author": "Hiresh Naik",
+  "license": "ISC",
+  "dependencies": {
+    "playwright": "^1.43.1",
+    "axios": "^1.6.7"
+  }
+}
