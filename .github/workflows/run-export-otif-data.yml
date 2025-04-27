@@ -1,25 +1,27 @@
-name: Run OTIF Data Export Every 5 Minutes
+name: run-otif-export
 
 on:
-  workflow_dispatch:     # 👈 Allows manual trigger (Run workflow button)
-  schedule:
-    - cron: '*/5 * * * *' # 👈 Runs automatically every 5 minutes
+  workflow_dispatch:
 
 jobs:
-  run-otif-export:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16' # or 18 if you prefer latest
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
 
-      - name: Install dependencies
-        run: npm install
+    - name: Install dependencies
+      run: |
+        cd script-runner
+        npm install
 
-      - name: Run export_otif_data.js
-        run: node export_otif_data.js
+    - name: Run the script
+      run: |
+        cd script-runner
+        node export_otif_data.js
