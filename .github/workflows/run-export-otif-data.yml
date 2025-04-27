@@ -20,6 +20,10 @@ jobs:
       run: |
         npm install
 
+    - name: Install Playwright Browsers
+      run: |
+        npx playwright install
+
     - name: Run the script
       run: |
         node export_otif_data.js
