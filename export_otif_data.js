@@ -36,30 +36,43 @@ const googleSheetWebhookURL = 'https://script.google.com/macros/s/AKfycbwV1BvLwA
   console.log('Page loaded successfully for login.');
 
   // 2. Wait for the search input field and type "Goa"
-  await page.waitForSelector('input[type="search"]#site', { timeout: 30000 });
-  console.log('Search input field found.');
-  
-  await page.fill('input[type="search"]#site', 'Goa');
-  console.log('Typed "Goa" in the search field.');
+  try {
+    await page.waitForSelector('input[type="search"]#site', { timeout: 60000 });
+    console.log('Search input field found.');
+    await page.fill('input[type="search"]#site', 'Goa');
+    console.log('Typed "Goa" in the search field.');
+  } catch (err) {
+    console.error('Error waiting for search input:', err);
+  }
 
   // 3. Wait for the dropdown options to load and select "Goa - Feeder"
-  await page.waitForSelector('div.ant-select-item-option-content', { timeout: 30000 });
-  console.log('Dropdown options found.');
-  
-  await page.click('div.ant-select-item-option-content:has-text("Goa - Feeder")');
-  console.log('Selected Goa - Feeder option.');
+  try {
+    await page.waitForSelector('div.ant-select-item-option-content', { timeout: 60000 });
+    console.log('Dropdown options found.');
+    await page.click('div.ant-select-item-option-content:has-text("Goa - Feeder")');
+    console.log('Selected Goa - Feeder option.');
+  } catch (err) {
+    console.error('Error selecting dropdown option:', err);
+  }
 
   // 4. Wait for the passcode input field and enter the passcode
-  await page.waitForSelector('#passcode', { timeout: 30000 });
-  await page.fill('#passcode', 'Z2NlejI1MzE3fjhaYlpKa0dSZW0=');
-  console.log('Passcode filled in.');
+  try {
+    await page.waitForSelector('#passcode', { timeout: 60000 });
+    await page.fill('#passcode', 'Z2NlejI1MzE3fjhaYlpKa0dSZW0=');
+    console.log('Passcode filled in.');
+  } catch (err) {
+    console.error('Error filling passcode:', err);
+  }
 
   // 5. Wait for the login button to be enabled and click it
-  await page.waitForSelector('.ant-btn.login-form-button:not([disabled])', { timeout: 30000 });
-  console.log('Login button enabled.');
-  
-  await page.click('.ant-btn.login-form-button');
-  console.log('Clicked login button.');
+  try {
+    await page.waitForSelector('.ant-btn.login-form-button:not([disabled])', { timeout: 60000 });
+    console.log('Login button enabled.');
+    await page.click('.ant-btn.login-form-button');
+    console.log('Clicked login button.');
+  } catch (err) {
+    console.error('Error clicking login button:', err);
+  }
 
   // 6. Wait for navigation to finish after login (increase timeout for headless mode)
   try {
@@ -72,20 +85,20 @@ const googleSheetWebhookURL = 'https://script.google.com/macros/s/AKfycbwV1BvLwA
   // 7. Explicitly wait for a known element after login (like a dashboard element)
   try {
     console.log('Waiting for dashboard element...');
-    await page.waitForSelector('.ant-layout-content', { timeout: 60000 }); // Changed to a more stable selector
+    await page.waitForSelector('.ant-layout-content', { timeout: 60000 });
     console.log('Successfully logged in and dashboard is loaded.');
   } catch (err) {
     console.error('Failed to load dashboard element:', err);
   }
 
   // 8. Now, fetch data from the dashboard
-  await page.goto(dashboardUrl, { waitUntil: 'domcontentloaded' });
-
   try {
+    await page.goto(dashboardUrl, { waitUntil: 'domcontentloaded' });
+
     console.log('Waiting for Show All Slots button...');
-    await page.waitForSelector('#outbound-dashboard\\.picking-summary\\.show-all-slots', { timeout: 15000 }); // Reduced wait time
+    await page.waitForSelector('#outbound-dashboard\\.picking-summary\\.show-all-slots', { timeout: 15000 });
     await page.click('#outbound-dashboard\\.picking-summary\\.show-all-slots');
-    await page.waitForTimeout(1000); // Reduced wait time
+    await page.waitForTimeout(1000);  // Reduced wait time
 
     const slots = await page.$$('div[id^="outbound-dashboard.slots-details-sidebar.slot"]');
     console.log(`Found ${slots.length} slots.`);
@@ -95,7 +108,7 @@ const googleSheetWebhookURL = 'https://script.google.com/macros/s/AKfycbwV1BvLwA
     for (const slot of slots) {
       await slot.scrollIntoViewIfNeeded();
       await slot.click();
-      await page.waitForTimeout(1000); // Reduced wait time
+      await page.waitForTimeout(1000);  // Reduced wait time
 
       const dispatchSpans = await slot.$$('span');
       const dispatchTime = (await dispatchSpans[0]?.innerText())?.trim() || '';
@@ -135,7 +148,6 @@ const googleSheetWebhookURL = 'https://script.google.com/macros/s/AKfycbwV1BvLwA
   }
 })();
 
-// Helper functions for tab data
 async function getTabData(page, tabName) {
   const tabSelector = `#outbound-dashboard\\.slots-details-sidebar\\.process-tabs-tab-${tabName}`;
   await page.click(tabSelector);
